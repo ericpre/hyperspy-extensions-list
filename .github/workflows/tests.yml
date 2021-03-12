@@ -19,17 +19,27 @@ jobs:
       matrix:
         HYPERSPY_VERSION: ['release', 'RnP', 'RnM']
         EXTENSION_VERSION: ['release', 'dev']
-        UPSTREAM_DEV: [false]
+        DEPENDENCIES_DEV: [false]
+        DEPENDENCIES_PRE_RELEASE: [false]
+        USE_MAMBA: [true]
         include:
           # test against upstream dev
-          - UPSTREAM_DEV: true
-            LABEL: -upstream_dev
+          - DEPENDENCIES_DEV: true
+            LABEL: -dependencies_dev
             HYPERSPY_VERSION: 'RnM'
             EXTENSION_VERSION: 'dev'
             DEPENDENCIES: numpy scipy scikit-learn scikit-image
+            USE_MAMBA: false
+          - DEPENDENCIES_PRE_RELEASE: true
+            LABEL: -dependencies_pre_release
+            HYPERSPY_VERSION: 'RnM'
+            EXTENSION_VERSION: 'dev'
+            DEPENDENCIES: matplotlib numba scipy numpy sympy h5py scikit-image
+            USE_MAMBA: false
+
     env:
       MPLBACKEND: agg
-      DEPS: hyperspy-base pyxem kikuchipy
+      EXTENSION: pyxem kikuchipy
       TEST_DEPS: pytest
     defaults:
       run:
@@ -48,13 +58,25 @@ jobs:
           conda info
           conda list
 
-      - name: Install extensions
+      - name: Install dependencies development version
+        if: ${{ matrix.DEPENDENCIES_DEV }}
         run: |
-          mamba install ${{ env.DEPS }}
+          pip install --upgrade --no-deps --pre \
+            -i https://pypi.anaconda.org/scipy-wheels-nightly/simple \
+            ${{ matrix.DEPENDENCIES }}
 
-      - name: Install Test dependencies
+      - name: Install dependencies pre release version
+        if: ${{ matrix.DEPENDENCIES_PRE_RELEASE }}
         run: |
-          mamba install pytest
+          pip install --upgrade --pre ${{ matrix.DEPENDENCIES }}
+
+      - name: Install extensions and Test dependencies
+        run: |
+          if [ ${{ matrix.USE_MAMBA }} == true ] ; then
+            mamba install hyperspy-base ${{ env.EXTENSION }} ${{ env.TEST_DEPS }}
+          else
+            pip install hyperspy ${{ env.EXTENSION }} ${{ env.TEST_DEPS }}
+          fi
 
       - name: Conda list
         run: |
@@ -75,13 +97,6 @@ jobs:
         run: |
           pip install https://github.com/pyxem/kikuchipy/archive/master.zip --no-deps
           pip install https://github.com/pyxem/pyxem/archive/master.zip --no-deps
-
-      - name: Install dependencies development version
-        if: ${{ matrix.UPSTREAM_DEV }}
-        run: |
-          pip install --upgrade --no-deps --pre \
-            -i https://pypi.anaconda.org/scipy-wheels-nightly/simple \
-            ${{ matrix.DEPENDENCIES }}
 
       - name: Run Pyxem Test Suite
         run: |
