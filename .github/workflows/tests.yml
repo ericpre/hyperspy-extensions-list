@@ -40,7 +40,8 @@ jobs:
     env:
       MPLBACKEND: agg
       EXTENSION: pyxem kikuchipy
-      TEST_DEPS: pytest
+      # Remove pytest-mpl once hyperspy 1.6.2 is released
+      TEST_DEPS: pytest pytest-mpl
     defaults:
       run:
         shell: bash -l {0}
@@ -98,12 +99,17 @@ jobs:
           pip install https://github.com/pyxem/kikuchipy/archive/master.zip --no-deps
           pip install https://github.com/pyxem/pyxem/archive/master.zip --no-deps
 
-      - name: Run Pyxem Test Suite
+      - name: Run HyperSpy Test Suite
         run: |
-          pytest --pyargs pyxem
+          python -m pytest --pyargs hyperspy
+
+      - name: Run Pyxem Test Suite
+        if: ${{ always() }}
+        run: |
+          python -m pytest --pyargs pyxem
 
       - name: Run Kikuchipy Test Suite
         if: ${{ always() }}
         run: |
-          pytest --pyargs kikuchipy
+          python -m pytest --pyargs kikuchipy
 
