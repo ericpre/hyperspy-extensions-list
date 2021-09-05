@@ -57,8 +57,7 @@ jobs:
         run: |
           git status
           # Get the exit code of the last command and save it to the COMMIT_REQUIRED variable
-          git diff --quiet --exit-code
-          echo "COMMIT_REQUIRED=$(echo $?)" >> $GITHUB_ENV
+          echo "COMMIT_REQUIRED=$(git diff --quiet --exit-code || echo $?)" >> $GITHUB_ENV
 
       - name: Push changes to Github
         if: ${{ env.COMMIT_REQUIRED == 1 }}
