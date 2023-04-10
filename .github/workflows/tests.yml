@@ -83,6 +83,33 @@ jobs:
             pip install hyperspy ${{ env.EXTENSION }} ${{ env.TEST_DEPS }}
           fi
 
+      - name: Conda list
+        run: |
+          conda list
+
+      - name: Install HyperSpy RnP
+        if: contains(matrix.HYPERSPY_VERSION, 'RnP')
+        run: |
+          pip install https://github.com/hyperspy/hyperspy/archive/RELEASE_next_patch.zip
+
+      - name: Install HyperSpy RnM
+        if: contains(matrix.HYPERSPY_VERSION, 'RnM')
+        run: |
+          pip install https://github.com/hyperspy/hyperspy/archive/RELEASE_next_minor.zip
+
+      - name: Install Extension Dev
+        if: contains(matrix.EXTENSION_VERSION, 'dev')
+        run: |
+          # Needs to use --force-reinstall in case the development version is incorrect
+          # and pip doesn't update it
+          pip install https://github.com/lumispy/lumispy/archive/main.zip --no-deps --force-reinstall
+          pip install https://github.com/pyxem/kikuchipy/archive/develop.zip --no-deps --force-reinstall
+          pip install https://github.com/pyxem/pyxem/archive/main.zip --no-deps --force-reinstall
+
+      - name: Conda list
+        run: |
+          conda list
+
       - name: Install numba development version
         if: ${{ matrix.DEPENDENCIES_NUMBA_DEV }}
         run: |
@@ -107,33 +134,10 @@ jobs:
         run: |
           conda list
 
-      - name: Install HyperSpy RnP
-        if: contains(matrix.HYPERSPY_VERSION, 'RnP')
-        run: |
-          pip install https://github.com/hyperspy/hyperspy/archive/RELEASE_next_patch.zip
-
-      - name: Install HyperSpy RnM
-        if: contains(matrix.HYPERSPY_VERSION, 'RnM')
-        run: |
-          pip install https://github.com/hyperspy/hyperspy/archive/RELEASE_next_minor.zip
-
-      - name: Install Extension Dev
-        if: contains(matrix.EXTENSION_VERSION, 'dev')
-        run: |
-          # Needs to use --force-reinstall in case the development version is incorrect
-          # and pip doesn't update it
-          pip install https://github.com/lumispy/lumispy/archive/main.zip --no-deps --force-reinstall
-          pip install https://github.com/pyxem/kikuchipy/archive/develop.zip --no-deps --force-reinstall
-          pip install https://github.com/pyxem/pyxem/archive/main.zip --no-deps --force-reinstall
-
       - name: Clear conda and pip cache
         run: |
           conda clean --all
           pip cache purge
-
-      - name: Conda list
-        run: |
-          conda list
 
       - name: Run HyperSpy Test Suite
         run: |
