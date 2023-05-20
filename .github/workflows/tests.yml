@@ -73,8 +73,9 @@ jobs:
             EXTENSION_VERSION: 'release'
 
     env:
+      ETS_TOOLKIT: qt
+      EXTENSION: hyperspy-gui-ipywidgets hyperspy-gui-traitsui kikuchipy lumispy pyxem
       MPLBACKEND: agg
-      EXTENSION: kikuchipy lumispy pyxem
       TEST_DEPS: pytest pytest-xdist pytest-rerunfailures pytest-mpl
     defaults:
       run:
@@ -92,6 +93,12 @@ jobs:
           # mambaforge distribution
           # auto-activate-base: true
           activate-environment: "test"
+
+      - name: 'Install Ubuntu packages for Qt'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install qtbase5-dev
 
       - name: Install pip
         run: |
@@ -160,6 +167,8 @@ jobs:
           pip install https://github.com/lumispy/lumispy/archive/main.zip
           pip install https://github.com/pyxem/kikuchipy/archive/develop.zip
           pip install https://github.com/pyxem/pyxem/archive/main.zip
+          pip install https://github.com/hyperspy/hyperspy_gui_ipywidgets/archive/main.zip
+          pip install https://github.com/hyperspy/hyperspy_gui_traitsui/archive/main.zip
 
       - name: Clear conda and pip cache
         run: |
@@ -179,6 +188,17 @@ jobs:
         run: |
           python -m pytest --pyargs rsciio -n 2
 
+      - name: Run hyperspy_gui_ipywidgets Test Suite
+        if: ${{ always() }}
+        run: |
+          python -m pytest --pyargs hyperspy_gui_ipywidgets
+
+      - name: Run hyperspy_gui_traitsui Test Suite
+        if: ${{ always() }}
+        # run the tests headlessly
+        run: |
+          xvfb-run python -m pytest --pyargs hyperspy_gui_traitsui
+  
       - name: Run kikuchipy Test Suite
         if: ${{ always() }}
         run: |
