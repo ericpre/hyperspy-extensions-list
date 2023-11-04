@@ -54,7 +54,7 @@ jobs:
           - DEPENDENCIES_PRE_RELEASE: true
             # Install RC version available on pypi
             LABEL: -dependencies_pre_release
-            HYPERSPY_VERSION: 'RnMPatch'
+            HYPERSPY_VERSION: 'RnPatch'
             RSIO_VERSION: 'dev'
             EXTENSION_VERSION: 'dev'
             DEPENDENCIES: matplotlib scipy scikit-learn sympy h5py scikit-image numba
@@ -200,7 +200,7 @@ jobs:
         run: |
           # Not possible to use "-n 2" because downloading test files will be ignored
           # Test fixed in dev branch but not release yet
-          python -m pytest --pyargs rsciio -k "not (TestSpec and test_metadata)"
+          python -m pytest --pyargs rsciio
 
       - name: Run hyperspy_gui_ipywidgets Test Suite
         if: ${{ always() }}
@@ -213,14 +213,25 @@ jobs:
         run: |
           xvfb-run python -m pytest --pyargs hyperspy_gui_traitsui
 
-      # - name: Run kikuchipy Test Suite
-      #   if: ${{ contains(matrix.HYPERSPY_VERSION, 'RnMajor') == false }}
-      #   run: |
-      #     python -m pytest --pyargs kikuchipy
+      - name: Run exspy Test Suite
+        if: ${{ always() && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
+        run: |
+          python -m pytest --pyargs exspy
+
+      - name: Run holospy Test Suite
+        if: ${{ always() && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
+        run: |
+          python -m pytest --pyargs holospy
+
+      - name: Run kikuchipy Test Suite
+        if: ${{ always() }}
+        #if: ${{ contains(matrix.HYPERSPY_VERSION, 'RnMajor') == false }}
+        run: |
+          python -m pytest --pyargs kikuchipy
 
       - name: Run LumiSpy Test Suite
         if: ${{ always() }}
-        #if: contains(matrix.EXTENSION_VERSION, 'dev') # Tests only against development version, if a fix is not released yet.
+        #if: ${{ always() && contains(matrix.EXTENSION_VERSION, 'dev') }} # Tests only against development version, if a fix is not released yet.
         run: |
           python -m pytest --pyargs lumispy
 
