@@ -134,22 +134,22 @@ jobs:
       - name: Install Extension Dev (RnPatch)
         if: ${{ contains(matrix.EXTENSION_VERSION, 'dev') && contains(matrix.HYPERSPY_VERSION, 'RnPatch') }}
         run: |
-          pip install https://github.com/hyperspy/hyperspy_gui_ipywidgets/archive/main.zip
-          pip install https://github.com/hyperspy/hyperspy_gui_traitsui/archive/main.zip
-          pip install https://github.com/pyxem/kikuchipy/archive/develop.zip
-          pip install https://github.com/lumispy/lumispy/archive/main.zip
-          pip install https://github.com/pyxem/pyxem/archive/main.zip
+          pip install "hyperspy_gui_ipywidgets @ git+https://github.com/hyperspy/hyperspy_gui_ipywidgets.git"
+          pip install "hyperspy_gui_traitsui @ git+https://github.com/hyperspy/hyperspy_gui_traitsui.git"
+          pip install "kikuchipy @ git+https://github.com/pyxem/kikuchipy.git"
+          pip install "lumispy @ git+https://github.com/lumispy/lumispy.git"
+          pip install "pyxem @ git+https://github.com/pyxem/pyxem.git"
 
       - name: Install Extension Dev (RnMajor)
         if: ${{ contains(matrix.EXTENSION_VERSION, 'dev') && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
         run: |
-          pip install https://github.com/hyperspy/exspy/archive/main.zip
-          pip install https://github.com/hyperspy/holospy/archive/main.zip
-          pip install https://github.com/hyperspy/hyperspy_gui_ipywidgets/archive/refs/heads/hyperspy2.0.zip
-          pip install https://github.com/hyperspy/hyperspy_gui_traitsui/archive/refs/heads/hyperspy2.0.zip
-          pip install https://github.com/pyxem/kikuchipy/archive/develop.zip
-          pip install https://github.com/lumispy/lumispy/archive/main.zip
-          pip install https://github.com/CSSFrancis/pyxem/archive/hyperspy_2.0.0_update.zip
+          pip install "exspy @ git+https://github.com/hyperspy/exspy.git"
+          pip install "holospy @ git+https://github.com/hyperspy/holospy.git"
+          pip install "hyperspy_gui_ipywidgets @ git+https://github.com/hyperspy/hyperspy_gui_ipywidgets.git@hyperspy2.0"
+          pip install "hyperspy_gui_traitsui @ git+https://github.com/hyperspy/hyperspy_gui_traitsui.git@hyperspy2.0"
+          pip install "kikuchipy @ git+https://github.com/pyxem/kikuchipy.git@develop"
+          pip install "lumispy @ git+https://github.com/lumispy/lumispy.git"
+          pip install "pyxem @ git+https://github.com/CSSFrancis/pyxem.git@hyperspy_2.0.0_update"
 
       - name: Install RosettaSciIO release
         if: ${{ contains(matrix.RSIO_VERSION, 'release') && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
@@ -159,7 +159,7 @@ jobs:
       - name: Install RosettaSciIO dev
         if: ${{ contains(matrix.RSIO_VERSION, 'dev') && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
         run: |
-          pip install "rosettasciio[all] @ https://github.com/hyperspy/rosettasciio/archive/main.zip"
+          pip install "rosettasciio[all] @ git+https://github.com/hyperspy/rosettasciio.git"
 
       - name: Install HyperSpy release
         if: contains(matrix.HYPERSPY_VERSION, 'release')
@@ -169,17 +169,17 @@ jobs:
       - name: Install HyperSpy RnPatch
         if: contains(matrix.HYPERSPY_VERSION, 'RnPatch')
         run: |
-          pip install "hyperspy[all] @ https://github.com/hyperspy/hyperspy/archive/RELEASE_next_patch.zip"
+          pip install "hyperspy[all] @ git+https://github.com/hyperspy/hyperspy.git@RELEASE_next_patch"
 
       - name: Install HyperSpy RnMinor
         if: contains(matrix.HYPERSPY_VERSION, 'RnMinor')
         run: |
-          pip install "hyperspy[all] @ https://github.com/hyperspy/hyperspy/archive/RELEASE_next_minor.zip"
+          pip install "hyperspy[all] @ git+https://github.com/hyperspy/hyperspy.git@RELEASE_next_minor"
 
       - name: Install HyperSpy RnMajor
         if: contains(matrix.HYPERSPY_VERSION, 'RnMajor')
         run: |
-          pip install "hyperspy[all] @ https://github.com/hyperspy/hyperspy/archive/RELEASE_next_major.zip"
+          pip install "hyperspy[all] @ git+https://github.com/hyperspy/hyperspy.git@RELEASE_next_major"
 
       - name: Clear conda and pip cache
         run: |
