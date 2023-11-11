@@ -149,7 +149,7 @@ jobs:
           pip install https://github.com/hyperspy/hyperspy_gui_traitsui/archive/refs/heads/hyperspy2.0.zip
           pip install https://github.com/pyxem/kikuchipy/archive/develop.zip
           pip install https://github.com/lumispy/lumispy/archive/main.zip
-          pip install https://github.com/pyxem/pyxem/archive/main.zip
+          pip install https://github.com/CSSFrancis/pyxem/archive/hyperspy_2.0.0_update.zip
 
       - name: Install RosettaSciIO release
         if: ${{ contains(matrix.RSIO_VERSION, 'release') && contains(matrix.HYPERSPY_VERSION, 'RnMajor') }}
