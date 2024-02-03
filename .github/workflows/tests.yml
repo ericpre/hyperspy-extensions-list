@@ -194,7 +194,7 @@ jobs:
       - name: Run hyperspy_gui_ipywidgets Test Suite
         if: ${{ always() }}
         run: |
-          python -m pytest --pyargs hyperspy_gui_ipywidgets -k "not test_spikes_removal_tool and not test_eels_table_tool"
+          python -m pytest --pyargs hyperspy_gui_ipywidgets
   
       - name: Run hyperspy_gui_traitsui Test Suite
         if: ${{ always() }}
@@ -224,7 +224,7 @@ jobs:
           python -m pytest --pyargs lumispy
 
       - name: Run Pyxem Test Suite
-        if: ${{ always() }}
+        # if: ${{ always() }}
+        if: contains(matrix.EXTENSION_VERSION, 'dev') # Tests only against development version, if a fix is not released yet.
         run: |
-          # Failure most likely related to numpy 1.25
-          python -m pytest --pyargs pyxem -k "not (TestMake4dPeakArrayTestData and test_rotation)"
+          python -m pytest --pyargs pyxem
