@@ -93,9 +93,9 @@ jobs:
           # auto-activate-base: true
           activate-environment: "test"
 
-      - name: Install pip pyqt and Test dependencies
+      - name: Install pyqt
         run: |
-          mamba install pip pyqt ${{ env.TEST_DEPS }}
+          mamba install pyqt ${{ env.TEST_DEPS }}
 
       - name: Conda info
         run: |
@@ -126,6 +126,10 @@ jobs:
           # remove when sympy supports mpmath 1.4
           pip install mpmath
           pip install --upgrade --pre ${{ matrix.DEPENDENCIES }}
+
+      - name: Install Test dependencies
+        run: |
+          pip install pyqt ${{ env.TEST_DEPS }}
 
       - name: Conda list
         run: |
