@@ -40,7 +40,7 @@ jobs:
             # others are installed as wheels from
             # https://anaconda.org/scientific-python-nightly-wheels/
             # see https://scientific-python.org/specs/spec-0004/
-            DEPENDENCIES: matplotlib scipy scikit-image scikit-learn
+            DEPENDENCIES: matplotlib scipy scikit-image scikit-learn numpy
             USE_MAMBA: false
             PYTHON_VERSION: '3.11'
           - DEPENDENCIES_NUMPY20: true
@@ -49,7 +49,6 @@ jobs:
             HYPERSPY_VERSION: 'RnMinor'
             RSIO_VERSION: 'dev'
             EXTENSION_VERSION: 'dev'
-            DEPENDENCIES: matplotlib scipy scikit-learn sympy h5py scikit-image numpy
             USE_MAMBA: false
             PYTHON_VERSION: '3.11'
           - DEPENDENCIES_PRE_RELEASE: true
@@ -95,7 +94,7 @@ jobs:
 
       - name: Install pyqt
         run: |
-          mamba install pyqt ${{ env.TEST_DEPS }}
+          mamba install pyqt
 
       - name: Conda info
         run: |
@@ -120,7 +119,7 @@ jobs:
           ${{ matrix.DEPENDENCIES }}
 
       - name: Install dependencies pre release version
-        if: ${{ matrix.DEPENDENCIES_PRE_RELEASE || matrix.DEPENDENCIES_NUMPY20 }}
+        if: ${{ matrix.DEPENDENCIES_PRE_RELEASE }}
         run: |
           # workaround for https://github.com/sympy/sympy/issues/26268
           # remove when sympy supports mpmath 1.4
@@ -129,9 +128,10 @@ jobs:
 
       - name: Install Test dependencies
         run: |
-          pip install pyqt ${{ env.TEST_DEPS }}
+          pip install ${{ env.TEST_DEPS }}
 
-      - name: Conda list
+      - name: Conda 
+        if: ${{ always() }}
         run: |
           conda list
 
@@ -181,6 +181,19 @@ jobs:
           pip install git+https://github.com/pyxem/pyxem.git
           pip install git+https://github.com/hyperspy/hyperspy_gui_ipywidgets.git
           pip install git+https://github.com/hyperspy/hyperspy_gui_traitsui.git
+
+      - name: Install dependencies numpy 2.0
+        # we need matplotlib dev to install numpy 2.0
+        if: ${{ matrix.DEPENDENCIES_NUMPY20 }}
+        run: |
+          # workaround for https://github.com/sympy/sympy/issues/26268
+          # remove when sympy supports mpmath 1.4
+          pip install mpmath
+          # We need matplotlib and scipy dev until they have (pre-) release
+          # supporting numpy 2.0
+          pip install --upgrade --pre --extra-index-url \
+          https://pypi.anaconda.org/scientific-python-nightly-wheels/simple matplotlib scipy
+          pip install --upgrade --pre numpy
 
       - name: Clear conda and pip cache
         run: |
