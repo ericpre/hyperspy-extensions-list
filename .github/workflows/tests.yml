@@ -154,6 +154,12 @@ jobs:
           pip install git+https://github.com/hyperspy/hyperspy_gui_ipywidgets.git
           pip install git+https://github.com/hyperspy/hyperspy_gui_traitsui.git
 
+      - name: Install dask 2024.11.2
+        run: |
+          # remove when tests failure with dask >=2024.12.0 are sorted
+          # reason currently unknown
+          mamba install dask-core=2024.11.2
+
       - name: Clear conda and pip cache
         run: |
           conda clean --all
