@@ -77,9 +77,19 @@ jobs:
           # auto-activate-base: true
           activate-environment: "test"
 
-      - name: Install pip pyqt and Test dependencies
+      - name: Install pip
         run: |
-          mamba install pip pyqt ${{ env.TEST_DEPS }}
+          mamba install pip
+
+      - name: Install pyqt and test dependencies (pip)
+        if: contains(matrix.EXTENSION_VERSION, 'dev')
+        run: |
+          pip install pyqt5 ${{ env.TEST_DEPS }}
+
+      - name: Install pyqt and test dependencies (mamba)
+        if: contains(matrix.EXTENSION_VERSION, 'release')
+        run: |
+          mamba install pyqt ${{ env.TEST_DEPS }}
 
       - name: Install dask 2024.11.2
         run: |
