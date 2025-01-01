@@ -77,9 +77,9 @@ jobs:
           # auto-activate-base: true
           activate-environment: "test"
 
-      - name: Install pip pyqt and Test dependencies
+      - name: Install pip, pyqt, pycifrw and Test dependencies
         run: |
-          mamba install pip pyqt ${{ env.TEST_DEPS }}
+          mamba install pip pyqt pycifrw ${{ env.TEST_DEPS }}
 
       - name: Install dask 2024.11.2
         run: |
