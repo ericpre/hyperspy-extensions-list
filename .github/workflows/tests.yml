@@ -77,15 +77,15 @@ jobs:
           # auto-activate-base: true
           activate-environment: "test"
 
-      - name: Install pip pyqt and Test dependencies
+      - name: Install pip, pyqt, orix and Test dependencies
         run: |
-          mamba install pip pyqt ${{ env.TEST_DEPS }}
+          mamba install pip pyqt orix ${{ env.TEST_DEPS }}
 
       - name: Install dask 2024.11.2
         run: |
           # remove when tests failure with dask >=2024.12.0 are sorted
           # https://github.com/hyperspy/rosettasciio/issues/345
-          mamba install dask-core=2024.11.2
+          mamba install dask-core=2024.8.0
 
       - name: Conda info
         run: |
@@ -203,11 +203,11 @@ jobs:
 
       - name: Run kikuchipy Test Suite
         if: ${{ always() }}
-        # Run the tests headlessly.
+        # Run the tests headlessly to avoid segmentation fault
         # Unskip test when https://github.com/pyxem/kikuchipy/issues/707 is fixed and
         # released.
         run: |
-          xvfb-run python -m pytest --pyargs kikuchipy -k "not test_not_allow_download_raises"
+          xvfb-run python -m pytest --pyargs kikuchipy -k "not test_spherical_pyvista and not test_not_allow_download_raises"
 
       - name: Run LumiSpy Test Suite
         if: ${{ always() }}
