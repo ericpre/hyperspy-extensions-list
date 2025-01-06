@@ -75,11 +75,12 @@ jobs:
           activate-environment: "test"
           conda-remove-defaults: "true"
 
-      - name: Install pip, pyqt and Test dependencies
+      - name: Install pip, pyqt, astra-toolbox, ffmpeg, pyvista and Test dependencies
         run: |
           # astra-toolbox from pypi.org only works with gpu
           # ffmpeg is a missing dependencies from etspy, see https://github.com/usnistgov/etspy/issues/25
-          mamba install pip pyqt astra-toolbox ffmpeg ${{ env.TEST_DEPS }}
+          # install pyvista as a workaround to avoid segmentation fault in kikuchipy
+          mamba install pip pyqt astra-toolbox ffmpeg pyvista ${{ env.TEST_DEPS }}
 
       - name: Install dask 2024.11.2
         run: |
@@ -204,7 +205,7 @@ jobs:
 
       - name: Run kikuchipy Test Suite
         if: ${{ always() }}
-        # Run the tests headlessly (pyvista)
+        # Run the tests headlessly for using pyvista
         # Unskip test when https://github.com/pyxem/kikuchipy/issues/707 is fixed and
         # released.
         run: |
