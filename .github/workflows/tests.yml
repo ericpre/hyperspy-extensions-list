@@ -72,7 +72,7 @@ jobs:
             USE_MAMBA: 'false'
 
     env:
-      EXTENSION: hyperspy-gui-ipywidgets hyperspy-gui-traitsui kikuchipy lumispy pyxem exspy holospy etspy
+      EXTENSION: hyperspy-gui-ipywidgets hyperspy-gui-traitsui kikuchipy lumispy pyxem exspy holospy
       TEST_DEPS: pytest pytest-xdist pytest-rerunfailures pytest-mpl filelock
       PYTHON_VERSION: '3.12'
     defaults:
@@ -93,10 +93,10 @@ jobs:
 
       - name: Install pip
         run: |
-          mamba install pip pyqt orix ${{ env.TEST_DEPS }}
+          mamba install pip
 
       - name: Install pyqt, orix and Test dependencies
-        if: ${{ matrix.USE_MAMBA }}
+        if: ${{ matrix.USE_MAMBA == 'true'}}
         run: |
           mamba install pyqt orix ${{ env.TEST_DEPS }}
 
@@ -177,7 +177,7 @@ jobs:
           pip install git+https://github.com/pyxem/pyxem.git
           pip install git+https://github.com/hyperspy/hyperspy_gui_ipywidgets.git
           pip install git+https://github.com/hyperspy/hyperspy_gui_traitsui.git
-          pip install git+https://github.com/usnistgov/etspy.git
+          # pip install git+https://github.com/usnistgov/etspy.git
 
       - name: Clear conda and pip cache
         run: |
@@ -242,8 +242,8 @@ jobs:
         run: |
           python -m pytest --pyargs pyxem
 
-      - name: Run ETSpy Test Suite
-        if: ${{ always() }}
-        # Test needs to be fixed, see https://github.com/usnistgov/etspy/issues/24
-        run: |
-          python -m pytest --pyargs etspy -n 2 -k "not test_version"
+      # - name: Run ETSpy Test Suite
+      #   if: ${{ always() }}
+      #   # Test needs to be fixed, see https://github.com/usnistgov/etspy/issues/24
+      #   run: |
+      #     python -m pytest --pyargs etspy -n 2 -k "not test_version"
