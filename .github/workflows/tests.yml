@@ -64,12 +64,12 @@ jobs:
             HYPERSPY_VERSION: 'release'
             RSIO_VERSION: 'release'
             EXTENSION_VERSION: 'release'
-            USE_MAMBA: true
+            USE_MAMBA: 'true'
           - os: macos
             HYPERSPY_VERSION: 'dev'
             RSIO_VERSION: 'dev'
             EXTENSION_VERSION: 'dev'
-            USE_MAMBA: false
+            USE_MAMBA: 'false'
 
     env:
       EXTENSION: hyperspy-gui-ipywidgets hyperspy-gui-traitsui kikuchipy lumispy pyxem exspy holospy etspy
@@ -91,11 +91,19 @@ jobs:
           # auto-activate-base: true
           activate-environment: "test"
 
-      - name: Install pip, pyqt, orix and Test dependencies
+      - name: Install pip
         run: |
-          # astra-toolbox from pypi.org only works with gpu
-          # ffmpeg is a missing dependencies from etspy, see https://github.com/usnistgov/etspy/issues/25
-          mamba install pip pyqt orix astra-toolbox ffmpeg ${{ env.TEST_DEPS }}
+          mamba install pip pyqt orix ${{ env.TEST_DEPS }}
+
+      - name: Install pyqt, orix and Test dependencies
+        if: ${{ matrix.USE_MAMBA }}
+        run: |
+          mamba install pyqt orix ${{ env.TEST_DEPS }}
+
+      - name: Install pyqt, orix and Test dependencies
+        if: ${{ matrix.USE_MAMBA == 'false' }}
+        run: |
+          pip install PyQt5 orix ${{ env.TEST_DEPS }}
 
       - name: Conda info
         run: |
