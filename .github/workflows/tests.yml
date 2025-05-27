@@ -66,8 +66,8 @@ jobs:
             EXTENSION_VERSION: 'release'
             USE_MAMBA: true
           - os: macos
-            HYPERSPY_VERSION: 'release'
-            RSIO_VERSION: 'release'
+            HYPERSPY_VERSION: 'dev'
+            RSIO_VERSION: 'dev'
             EXTENSION_VERSION: 'dev'
             USE_MAMBA: false
 
