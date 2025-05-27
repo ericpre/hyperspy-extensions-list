@@ -13,11 +13,12 @@ on:
 
 jobs:
   integration_test:
-    name: rs_${{ matrix.RSIO_VERSION }}-hs_${{ matrix.HYPERSPY_VERSION }}-ext_${{ matrix.EXTENSION_VERSION }}${{ matrix.LABEL }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }}-rs_${{ matrix.RSIO_VERSION }}-hs_${{ matrix.HYPERSPY_VERSION }}-ext_${{ matrix.EXTENSION_VERSION }}${{ matrix.LABEL }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu]
         HYPERSPY_VERSION: ['release', 'RnPatch', 'RnMinor']
         # When RostteSciIO is released, extent build matrix with released version
         RSIO_VERSION: ['release']
@@ -28,7 +29,8 @@ jobs:
         USE_MAMBA: [true]
         include:
           # test against upstream dev
-          - DEPENDENCIES_DEV: true
+          - os: ubuntu
+            DEPENDENCIES_DEV: true
             # Install dev version from https://anaconda.org/scientific-python-nightly-wheels/
             LABEL: -dependencies_dev
             HYPERSPY_VERSION: 'RnMinor'
@@ -40,7 +42,8 @@ jobs:
             # see https://scientific-python.org/specs/spec-0004/
             DEPENDENCIES: matplotlib scipy scikit-image scikit-learn
             USE_MAMBA: false
-          - DEPENDENCIES_PRE_RELEASE: true
+          - os: ubuntu
+            DEPENDENCIES_PRE_RELEASE: true
             # Install RC version available on pypi
             LABEL: -dependencies_pre_release
             HYPERSPY_VERSION: 'RnMinor'
@@ -48,7 +51,8 @@ jobs:
             EXTENSION_VERSION: 'dev'
             DEPENDENCIES: matplotlib scipy scikit-learn sympy h5py scikit-image numba
             USE_MAMBA: false
-          - DEPENDENCIES_NUMBA_DEV: true
+          - os: ubuntu
+            DEPENDENCIES_NUMBA_DEV: true
             # Install dev version from numba/label/dev channel using mamba
             LABEL: -dependencies_numba_dev
             HYPERSPY_VERSION: 'RnMinor'
@@ -56,6 +60,16 @@ jobs:
             EXTENSION_VERSION: 'dev'
             DEPENDENCIES: numba
             USE_MAMBA: true
+          - os: macos
+            HYPERSPY_VERSION: 'release'
+            RSIO_VERSION: 'release'
+            EXTENSION_VERSION: 'release'
+            USE_MAMBA: true
+          - os: macos
+            HYPERSPY_VERSION: 'release'
+            RSIO_VERSION: 'release'
+            EXTENSION_VERSION: 'dev'
+            USE_MAMBA: false
 
     env:
       EXTENSION: hyperspy-gui-ipywidgets hyperspy-gui-traitsui kikuchipy lumispy pyxem exspy holospy etspy
